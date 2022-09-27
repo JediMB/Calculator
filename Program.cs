@@ -14,6 +14,7 @@
             // Fråga användaren om den vill visa tidigare resultat.
             // Visa tidigare resultat
             // Fråga användaren om den vill avsluta eller fortsätta
+            //Try
         }
     }
 }
