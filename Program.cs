@@ -4,7 +4,7 @@
     {
         static void Main(/*string[] args*/)
         {
-            // Välkomnande meddelande
+            // Välkomnande meddelande (cw)
             // En lista för att spara historik för räkningar (History.cs -> enum Operation -> struct History (Queue<Decimal>, Queue<Operation>)) 
             // Användaren matar in tal och matematiska operation
             // OBS! Användaren måsta mata in ett tal för att kunna ta sig vidare i programmet!
