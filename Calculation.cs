@@ -1,26 +1,14 @@
 ﻿namespace Calculator
 {
-    public enum Operation
-    {
-        Null,
-        Add,
-        Subtract,
-        Multiply,
-        Divide
-    }
-
     struct Calculation
     {
-
         private Queue<decimal> numbers;
         private Queue<Operation> operations;
-        private decimal result;
 
         public Calculation()
         {
             numbers = new Queue<decimal>();
             operations = new Queue<Operation>();
-            result = 0;
         }
 
         public bool AddOperation(decimal number, Operation operation)
@@ -50,6 +38,15 @@
             else return '?';
         }
 
+        private decimal PerformOperation(decimal operand1, Operation operation, decimal operand2) => operation switch
+        {
+            Operation.Add => operand1 + operand2,
+            Operation.Subtract => operand1 - operand2,
+            Operation.Multiply => operand1 * operand2,
+            Operation.Divide => operand1 / operand2,
+            _ => throw new ArgumentOutOfRangeException(nameof(operation), $"Not a valid operation: {operation}."),
+        };
+
         public string GetCalculation()
         {
             // Make sure the queues don't somehow have different lengths
@@ -62,19 +59,45 @@
                 Operation[] operationArray = operations.ToArray();
 
                 string calculation = numberArray[0].ToString();
+                decimal result = numberArray[0]; // ADDED FOR RESULT
 
                 for (int i = 1; i < numberArray.Length; i++)
                 {
                     calculation += $" {GetOperation(operationArray[i])} {numberArray[i]}";
+                    result = PerformOperation(result, operationArray[i], numberArray[i]); // ADDED FOR RESULT
                 }
 
-                return calculation;
+                return $"{calculation} = {result}";
             }
             else
             {
                 throw new Exception("Queue members in a history instance somehow have different sizes!");
             }
         }
-        // decimal GetResult() - returnerar resultatet
+
+        public decimal GetResult() {
+            // Make sure the queues don't somehow have different lengths
+            if (numbers.Count == operations.Count)
+            {
+                if (numbers.Count == 0)
+                    return 0m;
+
+                decimal[] numberArray = numbers.ToArray();
+                Operation[] operationArray = operations.ToArray();
+
+                decimal result = numberArray[0];
+
+                for (int i = 1; i < numberArray.Length; i++)
+                {
+                    result = PerformOperation(result, operationArray[i], numberArray[i]);
+                }
+
+                return result;
+            }
+            else
+            {
+                throw new Exception("Queue members in a history instance somehow have different sizes!");
+            }
+        }
     }
 }

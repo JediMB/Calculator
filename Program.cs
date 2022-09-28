@@ -6,22 +6,23 @@ namespace Calculator
     {
         static void Main(/*string[] args*/)
         {
-            // En lista för att spara historik för räkningar (History.cs -> enum Operation -> struct History (Queue<Decimal>, Queue<Operation>))
-            Queue<Calculation> calculations = new Queue<Calculation>();
+            Queue<Calculation> calculations = new();
             bool exit = false;
 
-            // Välkomnande meddelande (cw)
-            Console.WriteLine("Welcome to Group 8's calculator!");
+            Console.WriteLine("Welcome to Group 8's calculator!" +
+                "\nPress any key to begin!");
+            Console.ReadKey();
 
 
             while (!exit)
             {
+                Console.Clear();
                 Console.WriteLine("What would you like to do?" +
                     "\n1. Make a calculation" +
                     "\n2. Show calulation history" +
                     "\n0. Exit the calculator");
 
-                Console.Write("\n:");
+                Console.Write(": ");
                 char menuSelection = Console.ReadKey().KeyChar;
                 
                 switch (menuSelection)
@@ -35,7 +36,7 @@ namespace Calculator
                         break;
 
                     case '2':
-                        ShowHistory();
+                        ShowHistory(calculations);
                         break;
 
                     default:
@@ -44,14 +45,6 @@ namespace Calculator
                 }
                 
             }
-            // Ifall användaren skulle dela 0 med 0 visa Ogiltig inmatning!
-            // Lägga resultat till listan
-            // Visa resultat
-            // Fråga användaren om den vill visa tidigare resultat.
-            // Visa tidigare resultat
-            // Fråga användaren om den vill avsluta eller fortsätta
-            Console.Write("\n\nPress any key to exit... ");
-            Console.ReadKey();
         }
 
         static void Calculation(Queue<Calculation> calculations)
@@ -59,13 +52,11 @@ namespace Calculator
             Calculation calculation = new();
             decimal result;
 
+            Console.Clear();
             Console.WriteLine("Let's count up your crimes!");
-
-            // Användaren matar in tal och matematiska operation
 
             while (true)
             {
-                // OBS! Användaren måsta mata in ett tal för att kunna ta sig vidare i programmet!
                 Console.Write("\nInput your first number: ");
                 if (!decimal.TryParse(Console.ReadLine(), out decimal number))
                 {
@@ -80,70 +71,92 @@ namespace Calculator
 
             while (true)
             {
+                Console.WriteLine();
                 Console.WriteLine("What operation do you want to perform?" +
-                    "\n1. Addition (+)" +
-                    "\n2. Subtraction (-)" +
-                    "\n3. Multiplication (×)" +
-                    "\n4. Division (÷)" +
-                    "\n0. Nothing!");
+                    "\n1. Addition (+)         2. Subtraction (-)" +
+                    "\n3. Multiplication (×)   4. Division (÷)" +
+                    "\n0. Done!");
                 Console.Write(": ");
 
 
-                if (!int.TryParse(Console.ReadKey().KeyChar.ToString(), out int operationSelection) || operationSelection > 4)
+                if (!int.TryParse(Console.ReadKey().KeyChar.ToString(), out int operationSelection) || operationSelection > Operator.OperationEnumMax)
                 {
-                    Console.WriteLine("ERROR: Invalid input!");
+                    Console.WriteLine("\nERROR: Invalid input!");
                     continue;
                 }
 
                 if (operationSelection == 0)
+                {
+                    calculations.Enqueue(calculation);
                     break;
+                }
 
-                Operation operation = (Operation)operationSelection;
+                string[] operationPreposition = { "add", "subtract by", "multiplay with", "divide by" };
 
-                if (operation == Operation.Add)
-                    Console.WriteLine("What number do you want to add?");
-                else if (operation == Operation.Subtract)
-                    Console.WriteLine("What number do you want to subtract by?");
-                else if (operation == Operation.Multiply)
-                    Console.WriteLine("What number do you want to multiply with?");
-                else if (operation == Operation.Divide)
-                    Console.WriteLine("What number do you want to divide by?");
+                Console.WriteLine("\n");
+                Console.WriteLine($"What number do you want to {operationPreposition[operationSelection-1]}?");
 
                 while (true)
                 {
                     Console.Write(": ");
                     if (!decimal.TryParse(Console.ReadLine(), out decimal number))
                     {
-                        Console.WriteLine("ERROR! NaN (not a number)");
+                        Console.WriteLine("ERROR: NaN (not a number)");
                         continue;
                     }
 
-                    if (number == 0 && operation == Operation.Divide)
+                    if (number == 0 && (Operation)operationSelection == Operation.Divide)
                     {
                         Console.WriteLine("ERROR: Can't divide by zero");
+                        continue;
                     }
 
-                    switch (operation) // TODO: CONTINUE HERE!!
+                    switch ((Operation)operationSelection)
                     {
                         case Operation.Add:
+                            result += number;
                             break;
                         case Operation.Subtract:
+                            result -= number;
                             break;
                         case Operation.Multiply:
+                            result *= number;
                             break;
                         case Operation.Divide:
+                            result /= number;
                             break;
                     }
-                    
+
+                    calculation.AddOperation(number, (Operation)operationSelection);
+
+                    Console.WriteLine(calculation.GetCalculation());
                     break;
                 }
 
             }
         }
 
-        static void ShowHistory()
+        static void ShowHistory(Queue<Calculation> calculations)
         {
+            Console.Clear();
 
+            if (calculations.Count == 0)
+            {
+                Console.WriteLine("No calculation history available.");
+            }
+            else
+            {
+                Console.WriteLine("Calculation history:" +
+                    "\n====================");
+                foreach (Calculation calculation in calculations)
+                {
+                    Console.WriteLine(calculation.GetCalculation());
+                }
+            }
+
+            Console.WriteLine();
+            Console.Write("Press any key to continue... ");
+            Console.ReadKey();
         }
     }
 }
