@@ -6,22 +6,23 @@ namespace Calculator
     {
         static void Main(/*string[] args*/)
         {
-            List<Calculation> calculations = new();
-            bool exit = false;
-
             Console.WriteLine("Welcome to Group 8's calculator!" +
                 "\nPress any key to begin!");
             Console.ReadKey();
 
-
-            while (!exit)
+            while (true)
             {
                 Console.Clear();
-                Console.WriteLine("What would you like to do?" +
+                Console.Write("What would you like to do?" +
                     "\n1. Make a calculation" +
                     "\n2. Show calulation history" +
-                    $"\n3. Toggle linear order of operations (now '{Operator.UseLinearOrderOfOperations.ToString().ToLower()}')" +
-                    "\n0. Exit the calculator");
+                    "\n3. Toggle order of operations (now ");
+
+                (Console.ForegroundColor, Console.BackgroundColor) = (Console.BackgroundColor, Console.ForegroundColor);
+                Console.Write(Operator.UseLinearOrderOfOperations ? "linear →" : "×÷+-");
+                (Console.ForegroundColor, Console.BackgroundColor) = (Console.BackgroundColor, Console.ForegroundColor);
+
+                Console.WriteLine(")" + "\n0. Exit the calculator");
 
                 Console.Write(": ");
                 char menuSelection = Console.ReadKey().KeyChar;
@@ -29,15 +30,14 @@ namespace Calculator
                 switch (menuSelection)
                 {
                     case '0':
-                        exit = true;
-                        break;
+                        return;
 
                     case '1':
-                        Calculation(calculations);
+                        Calculation();
                         break;
 
                     case '2':
-                        ShowHistory(calculations);
+                        ShowHistory();
                         break;
 
                     case '3':
@@ -52,10 +52,9 @@ namespace Calculator
             }
         }
 
-        static void Calculation(List<Calculation> calculations)
+        static void Calculation()
         {
             Calculation calculation = new();
-            decimal result;
 
             Console.Clear();
             Console.WriteLine("Let's count up your crimes!");
@@ -70,7 +69,6 @@ namespace Calculator
                 }
 
                 calculation.AddOperation(number, Operation.Null);
-                result = number;
                 break;
             }
 
@@ -83,23 +81,17 @@ namespace Calculator
                     "\n0. Done!");
                 Console.Write(": ");
 
+                char operationChar = Operator.ConvertInput(Console.ReadKey().KeyChar);
 
-                if (!int.TryParse(Console.ReadKey().KeyChar.ToString(), out int operationSelection) || operationSelection > Operator.OperationEnumMax)
+                if (!int.TryParse(operationChar.ToString(), out int operationSelection) || operationSelection > Operator.OperationEnumMax)
                 {
                     Console.WriteLine("\nERROR: Invalid input!");
                     continue;
                 }
 
-                if (operationSelection == 0)
-                {
-                    calculations.Add(calculation);
-                    break;
-                }
+                if (operationSelection == 0) { Operator.Calculations.Add(calculation); break; }
 
-                string[] operationPreposition = { "add", "subtract by", "multiply with", "divide by" };
-
-                Console.WriteLine("\n");
-                Console.WriteLine($"What number do you want to {operationPreposition[operationSelection-1]}?");
+                Console.WriteLine($"\n\nWhat number do you want to {Operator.OperationPreposition(operationSelection)}?");
 
                 while (true)
                 {
@@ -116,22 +108,6 @@ namespace Calculator
                         continue;
                     }
 
-                    switch ((Operation)operationSelection)
-                    {
-                        case Operation.Add:
-                            result += number;
-                            break;
-                        case Operation.Subtract:
-                            result -= number;
-                            break;
-                        case Operation.Multiply:
-                            result *= number;
-                            break;
-                        case Operation.Divide:
-                            result /= number;
-                            break;
-                    }
-
                     calculation.AddOperation(number, (Operation)operationSelection);
 
                     Console.WriteLine(calculation.GetCalculation());
@@ -140,12 +116,12 @@ namespace Calculator
 
             }
         }
-
-        static void ShowHistory(List<Calculation> calculations)
+        
+        static void ShowHistory()
         {
             Console.Clear();
 
-            if (calculations.Count == 0)
+            if (Operator.Calculations.Count == 0)
             {
                 Console.WriteLine("No calculation history available.");
             }
@@ -153,7 +129,7 @@ namespace Calculator
             {
                 Console.WriteLine("Calculation history:" +
                     "\n====================");
-                foreach (Calculation calculation in calculations)
+                foreach (Calculation calculation in Operator.Calculations)
                 {
                     Console.WriteLine(calculation.GetCalculation());
                 }

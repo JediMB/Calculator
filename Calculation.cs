@@ -1,6 +1,6 @@
 ﻿namespace Calculator
 {
-    struct Calculation
+    public struct Calculation
     {
         private readonly List<decimal> numbers;
         private readonly List<Operation> operations;
@@ -9,20 +9,6 @@
         {
             numbers = new List<decimal>();
             operations = new List<Operation>();
-        }
-
-        public bool AddOperation(decimal number, Operation operation)
-        {
-            if (number == 0 && operation == Operation.Divide)
-            {
-                Console.WriteLine("Can't divide by zero!");
-                return false;
-            }
-
-            numbers.Add(number);
-            operations.Add(operation);
-
-            return true;
         }
 
         private static char GetOperation(Operation operation)
@@ -46,6 +32,20 @@
             Operation.Divide => operand1 / operand2,
             _ => throw new ArgumentOutOfRangeException(nameof(operation), $"Not a valid operation: {operation}."),
         };
+
+        public bool AddOperation(decimal number, Operation operation)
+        {
+            if (number == 0 && operation == Operation.Divide)
+            {
+                Console.WriteLine("Can't divide by zero!");
+                return false;
+            }
+
+            numbers.Add(number);
+            operations.Add(operation);
+            
+            return true;
+        }
 
         public string GetCalculation()
         {
