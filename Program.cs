@@ -18,6 +18,7 @@ namespace Calculator
                     "\n2. Show calulation history" +
                     "\n3. Toggle order of operations (now ");
 
+                // Just some quick color-swapping for visual distinctiveness
                 (Console.ForegroundColor, Console.BackgroundColor) = (Console.BackgroundColor, Console.ForegroundColor);
                 Console.Write(Operator.UseLinearOrderOfOperations ? "linear →" : "×÷+-");
                 (Console.ForegroundColor, Console.BackgroundColor) = (Console.BackgroundColor, Console.ForegroundColor);
@@ -33,14 +34,14 @@ namespace Calculator
                         return;
 
                     case '1':
-                        Calculation();
+                        Calculate();
                         break;
 
                     case '2':
                         ShowHistory();
                         break;
 
-                    case '3':
+                    case '3': // Toggles calculation order
                         Operator.UseLinearOrderOfOperations = !Operator.UseLinearOrderOfOperations;
                         break;
 
@@ -52,14 +53,14 @@ namespace Calculator
             }
         }
 
-        static void Calculation()
+        static void Calculate()
         {
-            Calculation calculation = new();
+            Calculation calculation = new();    // The new calculation is added here
 
             Console.Clear();
-            Console.WriteLine("Let's count up your crimes!");
+            Console.WriteLine("Now, count up your crimes!");　//　さあ、お前の罪を数えろ！
 
-            while (true)
+            while (true)    // Make the user input a number first, and add it to the calculation object
             {
                 Console.Write("\nInput your first number: ");
                 if (!decimal.TryParse(Console.ReadLine(), out decimal number))
@@ -68,11 +69,11 @@ namespace Calculator
                     continue;
                 }
 
-                calculation.AddOperation(number, Operation.Null);
+                calculation.AddOperation(number, Operation.Null);   // Null because no operation is performed with the first number
                 break;
             }
 
-            while (true)
+            while (true)    // For the rest of the calculation, repeat this process:
             {
                 Console.WriteLine();
                 Console.WriteLine("What operation do you want to perform?" +
@@ -81,6 +82,7 @@ namespace Calculator
                     "\n0. Done!");
                 Console.Write(": ");
 
+                // 1) Let the user choose an operation from the list
                 char operationChar = Operator.ConvertInput(Console.ReadKey().KeyChar);
 
                 if (!int.TryParse(operationChar.ToString(), out int operationSelection) || operationSelection > Operator.OperationEnumMax)
@@ -89,11 +91,12 @@ namespace Calculator
                     continue;
                 }
 
+                // 1.5) Save the calculation to the history list if the user is DONE
                 if (operationSelection == 0) { Operator.Calculations.Add(calculation); break; }
 
                 Console.WriteLine($"\n\nWhat number do you want to {Operator.OperationPreposition(operationSelection)}?");
 
-                while (true)
+                while (true)    // 2) Let the user input another number
                 {
                     Console.Write(": ");
                     if (!decimal.TryParse(Console.ReadLine(), out decimal number))
@@ -108,9 +111,10 @@ namespace Calculator
                         continue;
                     }
 
-                    calculation.AddOperation(number, (Operation)operationSelection);
+                    if(!calculation.AddOperation(number, (Operation)operationSelection))    // 3) Add the number and operation type to the calculation
+                        Console.WriteLine("Can't divide by zero!"); // Error message if a divide by zero somehow snuck by (redundant)
 
-                    Console.WriteLine(calculation.GetCalculation());
+                    Console.WriteLine(calculation.GetCalculation());    // Lastly, print out the calculation before going back to step 1
                     break;
                 }
 
