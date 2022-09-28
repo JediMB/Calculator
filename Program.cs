@@ -6,7 +6,7 @@ namespace Calculator
     {
         static void Main(/*string[] args*/)
         {
-            Queue<Calculation> calculations = new();
+            List<Calculation> calculations = new();
             bool exit = false;
 
             Console.WriteLine("Welcome to Group 8's calculator!" +
@@ -20,6 +20,7 @@ namespace Calculator
                 Console.WriteLine("What would you like to do?" +
                     "\n1. Make a calculation" +
                     "\n2. Show calulation history" +
+                    $"\n3. Toggle linear order of operations (now '{Operator.UseLinearOrderOfOperations.ToString().ToLower()}')" +
                     "\n0. Exit the calculator");
 
                 Console.Write(": ");
@@ -39,6 +40,10 @@ namespace Calculator
                         ShowHistory(calculations);
                         break;
 
+                    case '3':
+                        Operator.UseLinearOrderOfOperations = !Operator.UseLinearOrderOfOperations;
+                        break;
+
                     default:
                         Console.Clear();
                         break;
@@ -47,7 +52,7 @@ namespace Calculator
             }
         }
 
-        static void Calculation(Queue<Calculation> calculations)
+        static void Calculation(List<Calculation> calculations)
         {
             Calculation calculation = new();
             decimal result;
@@ -87,11 +92,11 @@ namespace Calculator
 
                 if (operationSelection == 0)
                 {
-                    calculations.Enqueue(calculation);
+                    calculations.Add(calculation);
                     break;
                 }
 
-                string[] operationPreposition = { "add", "subtract by", "multiplay with", "divide by" };
+                string[] operationPreposition = { "add", "subtract by", "multiply with", "divide by" };
 
                 Console.WriteLine("\n");
                 Console.WriteLine($"What number do you want to {operationPreposition[operationSelection-1]}?");
@@ -136,7 +141,7 @@ namespace Calculator
             }
         }
 
-        static void ShowHistory(Queue<Calculation> calculations)
+        static void ShowHistory(List<Calculation> calculations)
         {
             Console.Clear();
 
