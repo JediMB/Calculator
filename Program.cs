@@ -77,9 +77,9 @@ namespace Calculator
             {
                 Console.WriteLine();
                 Console.WriteLine("What operation do you want to perform?" +
-                    "\n1. Addition (+)         2. Subtraction (-)" +
-                    "\n3. Multiplication (×)   4. Division (÷)" +
-                    "\n0. Done!");
+                    "\n1. Addition (+)             2. Subtraction (-)" +
+                    "\n3. Multiplication (×) [*]   4. Division (÷) [/]" +
+                    "\n0. Done! [ENTER]");
                 Console.Write(": ");
 
                 // 1) Let the user choose an operation from the list

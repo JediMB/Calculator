@@ -100,12 +100,12 @@
                 {
                     multiplicationAndDivisionIndices.Reverse(); // ...reverse the order of the list of indices...
 
-                    foreach (int i in multiplicationAndDivisionIndices) // ...so the items with those indices can safely be removed
+                    foreach (int i in multiplicationAndDivisionIndices) // ...so the items with those indices can safely be removed...
                     {
                         numbersCopy.RemoveAt(i);
                         operationsCopy.RemoveAt(i);
                     }
-
+                    result = numbersCopy[0]; // ...and update the base value in case it was affected by a multiplication or division
                 }
             }
 
