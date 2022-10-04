@@ -18,12 +18,12 @@
             {
                 string[] loadStrings = File.ReadAllLines(Operator.saveFile);
 
-                if (loadStrings.Length == 0)
+                if (loadStrings.Length == 0)    // An empty file doesn't count as a successfully loaded history
                     return false;
 
                 foreach (string loadString in loadStrings)
                 {
-                    string[] subStrings = loadString.Split(' ');
+                    string[] subStrings = loadString.Split(' ');    // Splits each line into substrings (numbers and operators)
 
                     if (!decimal.TryParse(subStrings[0], out decimal number))
                         throw new InvalidDataException($"Loaded string '{loadString}' malformed. First value is not a number.");
@@ -34,23 +34,23 @@
 
                     for (int i = 1; i < subStrings.Length; i++)
                     {
-                        if (subStrings[i] == "=")
+                        if (subStrings[i] == "=")   // The calculation is done when the equals sign is reached
                             break;
 
                         Operation operation = GetOperation(subStrings[i][0]);
 
                         if (operation == Operation.Null)
-                            break;
+                            throw new InvalidDataException($"Loaded string '{loadString}' malformed. Incorrect operator found.");
 
                         i++;
 
                         if (!decimal.TryParse(subStrings[i], out number))
                             break;
 
-                        calculation.AddOperation(number, operation);
+                        calculation.AddOperation(number, operation);    // If the operation and number parse properly, add them to the current calculation
                     }
 
-                    calculations.Add(calculation);
+                    calculations.Add(calculation);  // When all data has been added to the current calculation, add it to the calculation history
                 }
 
                 return true;
