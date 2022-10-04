@@ -18,7 +18,7 @@ namespace Calculator
                 Console.Clear();
                 Console.Write("What would you like to do?" +
                     "\n1. Make a calculation" +
-                    "\n2. Show calulation history" +
+                    "\n2. Show calculation history" +
                     "\n3. Clear calculation history" +
                     "\n4. Toggle order of operations (now ");
 
