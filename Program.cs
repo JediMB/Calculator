@@ -19,7 +19,8 @@ namespace Calculator
                 Console.Write("What would you like to do?" +
                     "\n1. Make a calculation" +
                     "\n2. Show calulation history" +
-                    "\n3. Toggle order of operations (now ");
+                    "\n3. Clear calculation history" +
+                    "\n4. Toggle order of operations (now ");
 
                 // Just some quick color-swapping for visual distinctiveness
                 (Console.ForegroundColor, Console.BackgroundColor) = (Console.BackgroundColor, Console.ForegroundColor);
@@ -33,7 +34,7 @@ namespace Calculator
                 
                 switch (menuSelection)
                 {
-                    case '0':
+                    case '0': // Saves and exits
                         Calculation.Save(Operator.Calculations);
                         return;
 
@@ -45,7 +46,11 @@ namespace Calculator
                         ShowHistory();
                         break;
 
-                    case '3': // Toggles calculation order
+                    case '3':
+                        ClearHistory();
+                        break;
+
+                    case '4': // Toggles calculation order
                         Operator.UseLinearOrderOfOperations = !Operator.UseLinearOrderOfOperations;
                         break;
 
@@ -145,6 +150,31 @@ namespace Calculator
 
             Console.WriteLine();
             Console.Write("Press any key to continue... ");
+            Console.ReadKey();
+        }
+
+        static void ClearHistory()
+        {
+            Console.Clear();
+
+            Console.Write("Are you sure you want to clear the calculation history?" +
+                "\nType CLEAR and press enter/return to confirm." +
+                "\n: ");
+
+            string input = Console.ReadLine() ?? string.Empty;
+
+            if (input == "CLEAR")
+            {
+                Operator.Calculations.Clear();
+
+                Console.Write("\n\nHistory cleared." +
+                    "\nPress any key to continue... ");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.WriteLine("\n\nContinuing without clearing." +
+                "\nPress any key... ");
             Console.ReadKey();
         }
     }

@@ -18,12 +18,15 @@
             {
                 string[] loadStrings = File.ReadAllLines(Operator.saveFile);
 
+                if (loadStrings.Length == 0)
+                    return false;
+
                 foreach (string loadString in loadStrings)
                 {
                     string[] subStrings = loadString.Split(' ');
 
                     if (!decimal.TryParse(subStrings[0], out decimal number))
-                        return false;
+                        throw new InvalidDataException($"Loaded string '{loadString}' malformed. First value is not a number.");
 
                     Calculation calculation = new();
 
