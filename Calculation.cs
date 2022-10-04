@@ -79,7 +79,6 @@
             // Copy the lists into temporary ones, so they can be safely manipulated
             List<decimal> numbersCopy = new(numbers);
             List<Operation> operationsCopy = new(operations);
-            decimal result = numbersCopy[0];
 
             // If we're not using linear calculations, things get a bit complicated...
             if (!Operator.UseLinearOrderOfOperations)
@@ -100,14 +99,15 @@
                 {
                     multiplicationAndDivisionIndices.Reverse(); // ...reverse the order of the list of indices...
 
-                    foreach (int i in multiplicationAndDivisionIndices) // ...so the items with those indices can safely be removed...
+                    foreach (int i in multiplicationAndDivisionIndices) // ...so the items with those indices can safely be removed
                     {
                         numbersCopy.RemoveAt(i);
                         operationsCopy.RemoveAt(i);
                     }
-                    result = numbersCopy[0]; // ...and update the base value in case it was affected by a multiplication or division
                 }
             }
+
+            decimal result = numbersCopy[0];
 
             // Lastly, perform any operations still remaining in the lists (which is all of them if using linear calculation)
             for (int i = 1; i < numbersCopy.Count; i++)

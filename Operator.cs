@@ -26,6 +26,7 @@
         public static char ConvertInput(char input) => input switch
         // Enables some alternate input when choosing operators
         {
+            '\r' => '0',
             '+' => '1',
             '-' => '2',
             '*' => '3',
