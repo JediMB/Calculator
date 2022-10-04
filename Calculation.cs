@@ -12,19 +12,81 @@
             operations = new List<Operation>();
         }
 
-        private static char GetOperation(Operation operation)
-            // Helps with parsing the calculation strings
+        public static bool Load(List<Calculation> calculations)
         {
-            if (operation == Operation.Add)
-                return '+';
-            if (operation == Operation.Subtract)
-                return '-';
-            if (operation == Operation.Multiply)
-                return '×';
-            if (operation == Operation.Divide)
-                return '÷';
-            else return '?';
+            if (File.Exists(Operator.saveFile))
+            {
+                string[] loadStrings = File.ReadAllLines(Operator.saveFile);
+
+                foreach (string loadString in loadStrings)
+                {
+                    string[] subStrings = loadString.Split(' ');
+
+                    if (!decimal.TryParse(subStrings[0], out decimal number))
+                        return false;
+
+                    Calculation calculation = new();
+
+                    calculation.AddOperation(number, Operation.Null);
+
+                    for (int i = 1; i < subStrings.Length; i++)
+                    {
+                        if (subStrings[i] == "=")
+                            break;
+
+                        Operation operation = GetOperation(subStrings[i][0]);
+
+                        if (operation == Operation.Null)
+                            break;
+
+                        i++;
+
+                        if (!decimal.TryParse(subStrings[i], out number))
+                            break;
+
+                        calculation.AddOperation(number, operation);
+                    }
+
+                    calculations.Add(calculation);
+                }
+
+                return true;
+            }
+
+            return false;
         }
+
+        public static void Save(List<Calculation> calculations)
+        {
+            string[] saveStrings = new string[calculations.Count];
+
+            for (int i = 0; i < calculations.Count; i++)
+            {
+                saveStrings[i] = calculations[i].GetCalculation();
+            }
+
+            File.WriteAllLines(Operator.saveFile, saveStrings);
+        }
+
+        private static char GetOperation(Operation operation) => operation switch
+        // Helps with writing the calculation strings
+        {
+            Operation.Add => '+',
+            Operation.Subtract => '-',
+            Operation.Multiply => '×',
+            Operation.Divide => '÷',
+            _ => '?'
+        };
+
+        private static Operation GetOperation(char character) => character switch
+        // Helps with reading the calculation strings
+        {
+            '+' => Operation.Add,
+            '-' => Operation.Subtract,
+            '×' => Operation.Multiply,
+            '÷' => Operation.Divide,
+            _ => Operation.Null
+        };
 
         private static decimal PerformOperation(decimal operand1, Operation operation, decimal operand2) => operation switch
         // Performs an operation on two numbers on behalf of GetResult(). Learned how to use Switch Expressions today and love them
@@ -85,8 +147,8 @@
             {
                 List<int> multiplicationAndDivisionIndices = new();
 
-                // Loop through the operations list and store the indices of any multiplications and divisions
-                for (int i = 1; i < operationsCopy.Count; i++)
+                // Loop through the operations list in reverse order and store the indices of any multiplications and divisions
+                for (int i = operationsCopy.Count-1; i > 0; i--)
                 {
                     if (operationsCopy[i] == Operation.Multiply || operationsCopy[i] == Operation.Divide)
                     {
@@ -97,9 +159,7 @@
 
                 if (multiplicationAndDivisionIndices.Count > 0) // If we found any multiplication or division...
                 {
-                    multiplicationAndDivisionIndices.Reverse(); // ...reverse the order of the list of indices...
-
-                    foreach (int i in multiplicationAndDivisionIndices) // ...so the items with those indices can safely be removed
+                    foreach (int i in multiplicationAndDivisionIndices) // ...remove those items from last to first
                     {
                         numbersCopy.RemoveAt(i);
                         operationsCopy.RemoveAt(i);

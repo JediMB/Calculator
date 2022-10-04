@@ -6,6 +6,9 @@ namespace Calculator
     {
         static void Main(/*string[] args*/)
         {
+            if (Calculation.Load(Operator.Calculations))
+                Console.WriteLine($"(Calculation history loaded from {Operator.saveFile})\n");
+
             Console.WriteLine("Welcome to Group 8's calculator!" +
                 "\nPress any key to begin!");
             Console.ReadKey();
@@ -23,7 +26,7 @@ namespace Calculator
                 Console.Write(Operator.UseLinearOrderOfOperations ? "linear →" : "×÷+-");
                 (Console.ForegroundColor, Console.BackgroundColor) = (Console.BackgroundColor, Console.ForegroundColor);
 
-                Console.WriteLine(")" + "\n0. Exit the calculator");
+                Console.WriteLine(")" + "\n0. Save and exit");
 
                 Console.Write(": ");
                 char menuSelection = Console.ReadKey().KeyChar;
@@ -31,6 +34,7 @@ namespace Calculator
                 switch (menuSelection)
                 {
                     case '0':
+                        Calculation.Save(Operator.Calculations);
                         return;
 
                     case '1':
