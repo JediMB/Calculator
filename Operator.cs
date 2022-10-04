@@ -16,7 +16,7 @@
         private static bool useLinearOrderOfOperations = false;             // Decides if calculations are made in linear or 'PEMDAS' order (without the 'PE')
         private static readonly int operationEnumMax = Enum.GetValues(typeof(Operation)).Cast<int>().Max();     // Size of the Operation enum, in case of expansion
         private static readonly string[] operationPrepositions = { "add", "subtract by", "multiply by", "divide by" };  // Replaces some 'if' or 'switch' logic
-        public static readonly string saveFile = "history.txt";            // The name or path of the history save file
+        public static readonly string saveFile = @"history.txt";            // The name or path of the history save file
 
         // Public properties for our private fields
         public static List<Calculation> Calculations { get => calculations; }
